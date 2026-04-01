@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Moment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            background-color: #000;
+            touch-action: manipulation;
+        }
+
+        #entry-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 5000;
+            display: flex; justify-content: center; align-items: center; text-align: center;
+        }
+
+        #entry-screen h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; animation: pulse 2s infinite; }
+
+        #main-content {
+            display: none; height: 100vh; width: 100vw; position: relative;
+            background: url('background.jpg') no-repeat center center; background-size: cover;
+        }
+
+        #main-content::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: 0;
+        }
+
+        #typewriter-section {
+            position: absolute; top: 5%; width: 90%; left: 5%;
+            text-align: center; font-size: 1.1rem; line-height: 1.4; min-height: 120px; z-index: 10;
+        }
+
+        .overlay {
+            height: 100%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10; position: relative;
+        }
+
+        h1#proposalText { font-family: 'Dancing Script', cursive; font-size: 2.2rem; text-align: center; margin-bottom: 30px; }
+
+        .btn-container {
+            display: flex; flex-direction: column; gap: 20px;
+            width: 100%; align-items: center; position: relative;
+        }
+
+        button {
+            padding: 15px 30px; font-size: 1.1rem; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 600; width: 80%; max-width: 280px;
+        }
+
+        #yesBtn { background-color: #4CAF50; color: white; z-index: 20; }
+        
+        #noBtn { 
+            background-color: #f44336; color: white; 
+            position: relative; transition: all 0.1s ease; z-index: 30;
+        }
+
+        #prank-container {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        #prank-text { font-size: 3rem; font-weight: 900; color: #ffeb3b; text-align: center; }
+
+        video { display: none; width: 100%; }
+
+        .monkey-screen { display: none; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="entry-screen" onclick="startExperience()">
+        <h2>Click to open your surprise...</h2>
+    </div>
+
+    <audio id="bgMusic" loop preload="auto"><source src="background_music.mp3" type="audio/mpeg"></audio>
+
+    <div id="main-content">
+        <div id="typewriter-section"></div>
+        <div class="overlay">
+            <h1 id="proposalText">❤️❤️❤️ I love you, </h1>
+            <div class="btn-container">
+                <button id="yesBtn" onclick="triggerPrank()">Yes, I love you too ❤️❤️❤️</button>
+                <button id="noBtn" ontouchstart="runAway(event)" onmouseover="runAway(event)">I hate you</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="prank-container">
+        <h1 id="prank-text">APRIL FOOL!</h1>
+        <video id="shockVideo" playsinline><source src="shock_video.mp4" type="video/mp4"></video>
+        <div id="monkeyFinal" class="monkey-screen">
+            <h1 style="font-size: 5rem;">🙊🤣</h1>
+            <h2>APRIL FOOL!</h2>
+            <button onclick="location.reload()" style="background: white; color: black; margin-top: 20px; width: auto;">Exit</button>
+        </div>
+    </div>
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+        const shockVideo = document.getElementById('shockVideo');
+        const typewriterElement = document.getElementById('typewriter-section');
+        const msg = "I fell in love with you before I knew what true love was... Will you marry me?";
+        
+        function startExperience() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let name = urlParams.get('name') || prompt("Enter your name:");
+            document.getElementById('proposalText').innerText += (name || "Monica");
+            bgMusic.play().catch(e => {});
+            document.getElementById('entry-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+
+            let charIndex = 0;
+            function type() {
+                if (charIndex < msg.length) {
+                    typewriterElement.innerHTML += msg.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 50);
+                }
+            }
+            type();
+        }
+
+        function runAway(event) {
+            if(event.type === 'touchstart') event.preventDefault();
+            
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+            const yesRect = yesBtn.getBoundingClientRect();
+            
+            noBtn.style.position = 'fixed';
+            
+            let newX, newY;
+            let isOverlapping = true;
+
+            // Loop until we find a position that doesn't overlap the Yes button
+            while (isOverlapping) {
+                newX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+                newY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+                // Define a "Safe Zone" around the Yes button (Yes button rect + 100px buffer)
+                const safeZone = {
+                    left: yesRect.left - 100,
+                    right: yesRect.right + 100,
+                    top: yesRect.top - 100,
+                    bottom: yesRect.bottom + 100
+                };
+
+                // Check if the new random coordinates fall inside that zone
+                if (newX + noBtn.offsetWidth < safeZone.left || 
+                    newX > safeZone.right || 
+                    newY + noBtn.offsetHeight < safeZone.top || 
+                    newY > safeZone.bottom) {
+                    isOverlapping = false;
+                }
+            }
+
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+        }
+
+        function triggerPrank() {
+            bgMusic.pause();
+            const pc = document.getElementById('prank-container');
+            pc.style.backgroundImage = "url('office_chaos.jpg')";
+            pc.style.display = 'flex';
+            
+            setTimeout(() => {
+                document.getElementById('prank-text').style.display = 'none';
+                pc.style.backgroundImage = 'none';
+                pc.style.backgroundColor = 'black';
+                shockVideo.style.display = 'block';
+                shockVideo.play();
+            }, 2000);
+
+            shockVideo.onended = () => {
+                shockVideo.style.display = 'none';
+                document.getElementById('monkeyFinal').style.display = 'block';
+            };
+        }
+    </script>
+</body>
+</html>
