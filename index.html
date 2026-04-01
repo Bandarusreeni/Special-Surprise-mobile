@@ -108,12 +108,12 @@
         const bgMusic = document.getElementById('bgMusic');
         const shockVideo = document.getElementById('shockVideo');
         const typewriterElement = document.getElementById('typewriter-section');
-        const msg = "I fell in love with you before I knew what true love was... Will you marry me?";
+        const msg = "I fell in love with you before I knew what true love was. I remained in love with you because I've never desired anyone or anything more than you. I will always love you because I cannot imagine even a moment of my existence without you. Will you marry me?";
         
         function startExperience() {
             const urlParams = new URLSearchParams(window.location.search);
             let name = urlParams.get('name') || prompt("Enter your name:");
-            document.getElementById('proposalText').innerText += (name || "Monica");
+            document.getElementById('proposalText').innerText += (name || "Monica")+"❤️❤️❤️";
             bgMusic.play().catch(e => {});
             document.getElementById('entry-screen').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
