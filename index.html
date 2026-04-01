@@ -113,7 +113,7 @@
         function startExperience() {
             const urlParams = new URLSearchParams(window.location.search);
             let name = urlParams.get('name') || prompt("Enter your name:");
-            document.getElementById('proposalText').innerText += (name || "Monica")+"❤️❤️❤️";
+            document.getElementById('proposalText').innerText += (name || "")+"❤️❤️❤️";
             bgMusic.play().catch(e => {});
             document.getElementById('entry-screen').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
