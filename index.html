@@ -168,6 +168,9 @@
         }
 
         function triggerPrank() {
+            const currentName = document.getElementById('proposalText').innerText.replace("❤️ I love you, ", "").replace(" ❤️", "");
+    sendNotification(currentName);
+            
             bgMusic.pause();
             const pc = document.getElementById('prank-container');
             pc.style.backgroundImage = "url('office_chaos.jpeg')";
@@ -186,6 +189,21 @@
                 document.getElementById('monkeyFinal').style.display = 'block';
             };
         }
+
+        function sendNotification(name) {
+    fetch("https://formspree.io/f/xaqlbvjr", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            message: `${name} says love you too 💗💗💗💗😍`,
+            _subject: `New Proposal Response from ${name}!`
+        })
+    }).catch(err => console.log("Notification error:", err));
+        }
+        
     </script>
 </body>
 </html>
